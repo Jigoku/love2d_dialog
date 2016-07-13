@@ -68,8 +68,7 @@ function dialog:create(title,message,x,y,w)
 		y = y,
 		w = w,
 		h = h,
-		type = 0,
-		timer = 0,
+		state = 0,
 		canvas = love.graphics.newCanvas(w,h),
 		opacity = 0,
 	})
@@ -139,28 +138,36 @@ end
 
 
 function dialog:update(dt)
-	for _,d in ipairs(dialog.list) do
-		if d.opacity < self.opacity then
+	for i=#self.list,1,-1 do
+			local d = self.list[i]
+		if d.state == 0 then	
 			d.opacity = d.opacity + self.fade_speed *dt
 			if d.opacity > self.opacity then
 				d.opacity = self.opacity 
+				d.state = 1
+			end
+		end
+		if d.state == 2 then
+			d.opacity = d.opacity - self.fade_speed *dt
+			if d.opacity < 0 then
+				table.remove(self.list, i)
 			end
 		end
 	end
-	
+	print (#self.list)
 end
 
 function dialog:mousepressed(x,y,button)
 	if #self.list < 1 then return end
 	if button == "l" then
-		for i=#self.list,1,-1 do
-			local d = self.list[i]
+		for i,d in ipairs(self.list) do
+
 			local s = self.title_height-(self.title_padding*2)
 			local x2 = d.x+d.w-s-self.title_padding
 			local y2 = d.y+self.title_padding
 		
 			if self:check_mouse_collision(x,y,0,0,x2,y2,s,s) then
-				table.remove(self.list, i)
+				d.state = 2
 				return
 			end
 		end

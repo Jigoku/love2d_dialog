@@ -35,6 +35,7 @@ function love.keypressed(key)
 		math.random(0,love.graphics.getHeight()), 								--y
 		100																		--maximum width
 		)
+		
 	end
 end
 
