@@ -158,7 +158,7 @@ end
 
 function dialog:mousepressed(x,y,button)
 	if #self.list < 1 then return end
-		
+	
 	for i=#self.list,1,-1 do
 		local d = self.list[i]
 		local s = self.title_height-(self.title_padding*2)
@@ -166,9 +166,11 @@ function dialog:mousepressed(x,y,button)
 		local y2 = d.y+self.title_padding
 		
 		if self:check_collision(x,y,0,0,d.x,d.y,d.w,d.h) then
-			if self:check_collision(x,y,0,0,x2,y2,s,s) then
-				d.state = 2
-				return 
+			if button == "l" then
+				if self:check_collision(x,y,0,0,x2,y2,s,s) then
+					d.state = 2
+				end
+				return
 			end
 		end
 		
