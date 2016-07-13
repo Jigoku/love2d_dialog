@@ -78,68 +78,68 @@ function dialog:draw()
 
 		
 	for _,d in ipairs(self.list) do
-			love.graphics.setCanvas(d.canvas)
-			d.canvas:clear()
+		love.graphics.setCanvas(d.canvas)
+		d.canvas:clear()
 			
-			--background
-			self:setColour(self.colours.background)
-			love.graphics.rectangle("fill", 0,0,d.w,d.h )
+		--background
+		self:setColour(self.colours.background)
+		love.graphics.rectangle("fill", 0,0,d.w,d.h )
 			
-			--frame
-			self:setColour(self.colours.border)
-			love.graphics.rectangle("line", 0,0,d.w,d.h )
+		--frame
+		self:setColour(self.colours.border)
+		love.graphics.rectangle("line", 0,0,d.w,d.h )
 			
-			--title
-			self:setColour(self.colours.title)
-			love.graphics.rectangle("fill", 0,0,d.w,self.title_height)
+		--title
+		self:setColour(self.colours.title)
+		love.graphics.rectangle("fill", 0,0,d.w,self.title_height)
 			
-			--frame
-			self:setColour(self.colours.border)
-			love.graphics.rectangle("line", 0,0,d.w,self.title_height )
+		--frame
+		self:setColour(self.colours.border)
+		love.graphics.rectangle("line", 0,0,d.w,self.title_height )
 				
-			--button
-			self:setColour(self.colours.button)
-			local s = self.title_height-(self.title_padding*2)
-			local x = d.w-s-self.title_padding
-			local y = self.title_padding
+		--button
+		self:setColour(self.colours.button)
+		local s = self.title_height-(self.title_padding*2)
+		local x = d.w-s-self.title_padding
+		local y = self.title_padding
 			
-			love.graphics.rectangle("fill", x,y,s,s )
-			self:setColour(self.colours.border)
-			love.graphics.rectangle("line", x,y,s,s )
+		love.graphics.rectangle("fill", x,y,s,s )
+		self:setColour(self.colours.border)
+		love.graphics.rectangle("line", x,y,s,s )
 			
-			local pad = 5
-			love.graphics.line(x+pad,y+pad,x+s-pad,y+s-pad)
-			love.graphics.line(x+s-pad,y+pad,x+pad,y+s-pad)
+		local pad = 5
+		love.graphics.line(x+pad,y+pad,x+s-pad,y+s-pad)
+		love.graphics.line(x+s-pad,y+pad,x+pad,y+s-pad)
+		
+		--title text
+		self:setColour(self.colours.title_text)	
 			
-			--title text
-			self:setColour(self.colours.title_text)	
-				
-			love.graphics.setFont(self.title_font)
-			love.graphics.printf(d.title, self.title_padding,self.title_padding,0,"left",0,1,1)
-			--message text
-
-			self:setColour(self.colours.message_text)
-			love.graphics.setFont(self.message_font)
-			love.graphics.printf(
-				d.message, 
-				self.message_padding,
-				self.message_padding+self.title_height,
-				d.w-self.message_padding*2,
-				"left",0,1,1
-			)
+		love.graphics.setFont(self.title_font)
+		love.graphics.printf(d.title, self.title_padding,self.title_padding,0,"left",0,1,1)
+		
+		--message text
+		self:setColour(self.colours.message_text)
+		love.graphics.setFont(self.message_font)
+		love.graphics.printf(
+			d.message, 
+			self.message_padding,
+			self.message_padding+self.title_height,
+			d.w-self.message_padding*2,
+			"left",0,1,1
+		)
+		
+		love.graphics.setCanvas()
 			
-			love.graphics.setCanvas()
-			
-			--draw the message box
-			love.graphics.setColor(255,255,255,d.opacity)
-			love.graphics.draw(d.canvas, d.x,d.y)
+		--draw the message box
+		love.graphics.setColor(255,255,255,d.opacity)
+		love.graphics.draw(d.canvas, d.x,d.y)
 	end
 end
 
 
 function dialog:update(dt)
 	for i=#self.list,1,-1 do
-			local d = self.list[i]
+		local d = self.list[i]
 		if d.state == 0 then	
 			d.opacity = d.opacity + self.fade_speed *dt
 			if d.opacity > self.opacity then
@@ -154,27 +154,29 @@ function dialog:update(dt)
 			end
 		end
 	end
-	print (#self.list)
 end
 
 function dialog:mousepressed(x,y,button)
 	if #self.list < 1 then return end
-	if button == "l" then
-		for i,d in ipairs(self.list) do
-
-			local s = self.title_height-(self.title_padding*2)
-			local x2 = d.x+d.w-s-self.title_padding
-			local y2 = d.y+self.title_padding
 		
-			if self:check_mouse_collision(x,y,0,0,x2,y2,s,s) then
+	for i=#self.list,1,-1 do
+		local d = self.list[i]
+		local s = self.title_height-(self.title_padding*2)
+		local x2 = d.x+d.w-s-self.title_padding
+		local y2 = d.y+self.title_padding
+		
+		if self:check_collision(x,y,0,0,d.x,d.y,d.w,d.h) then
+			if self:check_collision(x,y,0,0,x2,y2,s,s) then
 				d.state = 2
-				return
+				return 
 			end
 		end
+		
 	end
+	
 end
 
-function dialog:check_mouse_collision(x1,y1,w1,h1, x2,y2,w2,h2)
+function dialog:check_collision(x1,y1,w1,h1, x2,y2,w2,h2)
 	return x1 < x2+w2 and
 		 x2 < x1+w1 and
 		 y1 < y2+h2 and
