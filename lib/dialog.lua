@@ -20,7 +20,7 @@
  place dialog:mousepressed(x,y,button) in your love.mousepressed() routine
  
  spawn a dialog message:
- 	dialog:create("Test","This is a test message,100,100,150,200)
+ 	dialog:create("Test","This is a test message",100,150,200)
  
  
  --]]
@@ -54,9 +54,14 @@ function dialog:setColour(t)
 	love.graphics.setColor(t[1],t[2],t[3],t[4])
 end
 
-function dialog:create(title,message,x,y,w,h,type,timer)
+function dialog:create(title,message,x,y,w)
 	if w < self.min_width then w = self.min_width end
+	
+	local _,lines  = self.message_font:getWrap(message, w-self.message_padding*2)
+	local h = self.message_font:getHeight() * lines+ self.title_height + self.title_padding*4
+
 	table.insert(self.list, {
+		--title = title,
 		title = title,
 		message = message,
 		x = x,
@@ -108,14 +113,21 @@ function dialog:draw()
 			love.graphics.line(x+s-pad,y+pad,x+pad,y+s-pad)
 			
 			--title text
-			self:setColour(self.colours.title_text)		
+			self:setColour(self.colours.title_text)	
+				
 			love.graphics.setFont(self.title_font)
 			love.graphics.printf(d.title, self.title_padding,self.title_padding,0,"left",0,1,1)
 			--message text
-									
+
 			self:setColour(self.colours.message_text)
 			love.graphics.setFont(self.message_font)
-			love.graphics.printf(d.message, self.message_padding,self.message_padding+self.title_height,d.w-self.message_padding*2,"left",0,1,1)
+			love.graphics.printf(
+				d.message, 
+				self.message_padding,
+				self.message_padding+self.title_height,
+				d.w-self.message_padding*2,
+				"left",0,1,1
+			)
 			
 			love.graphics.setCanvas()
 			
@@ -127,7 +139,6 @@ end
 
 
 function dialog:update(dt)
-
 	for _,d in ipairs(dialog.list) do
 		if d.opacity < self.opacity then
 			d.opacity = d.opacity + self.fade_speed *dt
@@ -140,6 +151,7 @@ function dialog:update(dt)
 end
 
 function dialog:mousepressed(x,y,button)
+	if #self.list < 1 then return end
 	if button == "l" then
 		for i=#self.list,1,-1 do
 			local d = self.list[i]

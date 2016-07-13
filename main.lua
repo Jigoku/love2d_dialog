@@ -29,14 +29,11 @@ function love.keypressed(key)
 	
 	if key == " " then
 		dialog:create(
-			"Test",
-			"This is a test message.\n\nYou can close this message by clicking the button",
-			math.random(0,love.graphics.getWidth()),
-			math.random(0,love.graphics.getHeight()),
-			150,
-			math.random(50,200),
-			0,
-			0
+		"Warning!",																--title text
+		"This is a test message.\n\nYou can close this by clicking the button.",--message text
+		math.random(0,love.graphics.getWidth()),								--x
+		math.random(0,love.graphics.getHeight()), 								--y
+		100																		--maximum width
 		)
 	end
 end

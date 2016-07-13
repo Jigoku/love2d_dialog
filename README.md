@@ -10,6 +10,6 @@ a simple library for spawning dialog boxes
 * place dialog:mousepressed(x,y,button) in your love.mousepressed() routine
  
 ### Usage
-``dialog:create("Test","This is a test message,100,100,150,200)``
+``dialog:create("Test","This is a test message",100,150,100)``
  
 See `main.lua` for an example.
