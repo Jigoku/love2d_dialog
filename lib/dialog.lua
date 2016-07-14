@@ -35,9 +35,12 @@ dialog = {
 	fade_speed = 1000,
 	opacity = 200,
 	
+	-- title_image = nil,
+	title_image = love.graphics.newImage("titlebars/1.png"),
+	
 	colours = {
 		background = { 30,30,30,255 },
-		title = { 120,40,40,255 },
+		title = { 120,255,120,255 },
 		button = { 130,130,130,255 },
 		border = { 0,0,0,255 },
 		title_text = { 200,200,200,255 },
@@ -95,7 +98,13 @@ function dialog:draw()
 		--title
 		setColour(self.colours.title)
 		love.graphics.rectangle("fill", 0,0,d.w,self.title_height)
-			
+		
+		if type(self.title_image) == "userdata" then			
+			for x=0,d.w,self.title_image:getWidth() do
+				love.graphics.draw(self.title_image,x,0,0,1,self.title_height/self.title_image:getHeight())
+			end
+		end
+		
 		--frame
 		setColour(self.colours.border)
 		love.graphics.rectangle("line", 0,0,d.w,self.title_height )
