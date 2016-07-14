@@ -28,12 +28,17 @@ function love.keypressed(key)
 	end
 	
 	if key == " " then
+		
+		local n = math.random(0,2)
+		local align = (n == 0 and "left" or n == 1 and "center" or n == 2 and "right")
+
 		dialog:create(
 		"Warning!",																--title text
 		"This is a test message.\n\nYou can close this by clicking the button.",--message text
 		math.random(0,love.graphics.getWidth()),								--x
 		math.random(0,love.graphics.getHeight()), 								--y
-		100																		--maximum width
+		math.random(50,250),													--maximum width
+		align
 		)
 		
 	end

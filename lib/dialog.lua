@@ -20,7 +20,7 @@
  place dialog:mousepressed(x,y,button) in your love.mousepressed() routine
  
  spawn a dialog message:
- 	dialog:create("Test","This is a test message",100,150,200)
+ 	dialog:create("Test","This is a test message",100,150,200,"left")
  
  
  --]]
@@ -50,18 +50,17 @@ dialog = {
 dialog.list = {}
 
 
-function dialog:setColour(t)
+local setColour = function(t)
 	love.graphics.setColor(t[1],t[2],t[3],t[4])
 end
 
-function dialog:create(title,message,x,y,w)
+function dialog:create(title,message,x,y,w,align)
 	if w < self.min_width then w = self.min_width end
 	
 	local _,lines  = self.message_font:getWrap(message, w-self.message_padding*2)
 	local h = self.message_font:getHeight() * lines+ self.title_height + self.title_padding*4
 
 	table.insert(self.list, {
-		--title = title,
 		title = title,
 		message = message,
 		x = x,
@@ -71,6 +70,7 @@ function dialog:create(title,message,x,y,w)
 		state = 0,
 		canvas = love.graphics.newCanvas(w,h),
 		opacity = 0,
+		align = align or "left"
 	})
 end
 
@@ -82,29 +82,29 @@ function dialog:draw()
 		d.canvas:clear()
 			
 		--background
-		self:setColour(self.colours.background)
+		setColour(self.colours.background)
 		love.graphics.rectangle("fill", 0,0,d.w,d.h )
 			
 		--frame
-		self:setColour(self.colours.border)
+		setColour(self.colours.border)
 		love.graphics.rectangle("line", 0,0,d.w,d.h )
 			
 		--title
-		self:setColour(self.colours.title)
+		setColour(self.colours.title)
 		love.graphics.rectangle("fill", 0,0,d.w,self.title_height)
 			
 		--frame
-		self:setColour(self.colours.border)
+		setColour(self.colours.border)
 		love.graphics.rectangle("line", 0,0,d.w,self.title_height )
 				
 		--button
-		self:setColour(self.colours.button)
+		setColour(self.colours.button)
 		local s = self.title_height-(self.title_padding*2)
 		local x = d.w-s-self.title_padding
 		local y = self.title_padding
 			
 		love.graphics.rectangle("fill", x,y,s,s )
-		self:setColour(self.colours.border)
+		setColour(self.colours.border)
 		love.graphics.rectangle("line", x,y,s,s )
 			
 		local pad = 5
@@ -112,20 +112,20 @@ function dialog:draw()
 		love.graphics.line(x+s-pad,y+pad,x+pad,y+s-pad)
 		
 		--title text
-		self:setColour(self.colours.title_text)	
+		setColour(self.colours.title_text)	
 			
 		love.graphics.setFont(self.title_font)
 		love.graphics.printf(d.title, self.title_padding,self.title_padding,0,"left",0,1,1)
 		
 		--message text
-		self:setColour(self.colours.message_text)
+		setColour(self.colours.message_text)
 		love.graphics.setFont(self.message_font)
 		love.graphics.printf(
 			d.message, 
 			self.message_padding,
 			self.message_padding+self.title_height,
 			d.w-self.message_padding*2,
-			"left",0,1,1
+			d.align,0,1,1
 		)
 		
 		love.graphics.setCanvas()
