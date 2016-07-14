@@ -54,11 +54,13 @@ local setColour = function(t)
 	love.graphics.setColor(t[1],t[2],t[3],t[4])
 end
 
+function dialog:getMessageHeight(w,message)
+	local _,lines  = self.message_font:getWrap(message, w-self.message_padding*2)
+	return self.message_font:getHeight() * lines+ self.title_height + self.title_padding*4
+end
+
 function dialog:create(title,message,x,y,w,align)
 	if w < self.min_width then w = self.min_width end
-	
-	local _,lines  = self.message_font:getWrap(message, w-self.message_padding*2)
-	local h = self.message_font:getHeight() * lines+ self.title_height + self.title_padding*4
 
 	table.insert(self.list, {
 		title = title,
@@ -66,7 +68,7 @@ function dialog:create(title,message,x,y,w,align)
 		x = x,
 		y = y,
 		w = w,
-		h = h,
+		h = self:getMessageHeight(w, message),
 		state = 0,
 		canvas = love.graphics.newCanvas(w,h),
 		opacity = 0,
@@ -117,9 +119,11 @@ function dialog:draw()
 		love.graphics.setFont(self.title_font)
 		love.graphics.printf(d.title, self.title_padding,self.title_padding,0,"left",0,1,1)
 		
+		
 		--message text
 		setColour(self.colours.message_text)
 		love.graphics.setFont(self.message_font)
+		if not d.shaded then
 		love.graphics.printf(
 			d.message, 
 			self.message_padding,
@@ -127,12 +131,13 @@ function dialog:draw()
 			d.w-self.message_padding*2,
 			d.align,0,1,1
 		)
-		
+		end
 		love.graphics.setCanvas()
 			
 		--draw the message box
 		love.graphics.setColor(255,255,255,d.opacity)
 		love.graphics.draw(d.canvas, d.x,d.y)
+		
 	end
 end
 
@@ -169,6 +174,17 @@ function dialog:mousepressed(x,y,button)
 			if button == "l" then
 				if self:check_collision(x,y,0,0,x2,y2,s,s) then
 					d.state = 2
+				end
+				return
+			end
+			if button == "r" then
+				if self:check_collision(x,y,0,0,d.x,d.y,d.w,self.title_height) then
+					d.shaded = not d.shaded
+					if d.shaded then 
+						d.h = self.title_height
+					else
+						d.h = self:getMessageHeight(d.w,d.message)
+					end
 				end
 				return
 			end
