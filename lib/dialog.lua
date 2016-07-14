@@ -20,23 +20,23 @@
  place dialog:mousepressed(x,y,button) in your love.mousepressed() routine
  
  spawn a dialog message:
- 	dialog:create("Test","This is a test message",100,150,200,"left")
+ 	dialog:new("Test","This is a test message",100,150,200,"left")
  
  
  --]]
- 
+
 dialog = {
 	title_padding = 5,
 	message_padding = 10,
 	title_height = 25,
-	title_font = love.graphics.newFont(14),
-	message_font = love.graphics.newFont(12),
+	title_font = love.graphics.newFont(13),
+	message_font = love.graphics.newFont(11),
 	min_width = 150,
 	fade_speed = 1000,
 	opacity = 200,
 	
 	-- title_image = nil,
-	title_image = love.graphics.newImage("titlebars/1.png"),
+	title_image = love.graphics.newImage("titlebars/3.png"),
 	
 	colours = {
 		background = { 30,30,30,255 },
@@ -62,7 +62,7 @@ function dialog:getMessageHeight(w,message)
 	return self.message_font:getHeight() * lines+ self.title_height + self.title_padding*4
 end
 
-function dialog:create(title,message,x,y,w,align,canshade)
+function dialog:new(title,message,x,y,w,align,canshade)
 	if w < self.min_width then w = self.min_width end
 	
 	table.insert(self.list, {
@@ -142,6 +142,7 @@ function dialog:draw()
 			d.align,0,1,1
 		)
 		end
+		
 		love.graphics.setCanvas()
 			
 		--draw the message box
@@ -210,3 +211,5 @@ function dialog:check_collision(x1,y1,w1,h1, x2,y2,w2,h2)
 		 y1 < y2+h2 and
 		 y2 < y1+h1
 end
+
+return dialog

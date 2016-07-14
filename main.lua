@@ -1,10 +1,13 @@
--- example program for dialog library
+-- example program 
 
-require("lib/dialog")
+local dialog = require("lib/dialog")
+local cursor = require("lib/cursor")
 
 function love.load()
 	math.randomseed(os.time())
-	love.graphics.setBackgroundColor(100,100,100)
+	love.graphics.setBackgroundColor(120,120,120)
+	
+	cursor:new("cursors/2.png")
 end
 
 function love.draw()
@@ -32,8 +35,8 @@ function love.keypressed(key)
 		local n = math.random(0,2)
 		local align = (n == 0 and "left" or n == 1 and "center" or n == 2 and "right")
 
-		dialog:create(
-		"Warning!",																--title text
+		dialog:new(
+		"Hello!",																--title text
 		"This is a test message.\n\nYou can close this by clicking the button.",--message text
 		math.random(0,love.graphics.getWidth()),								--x
 		math.random(0,love.graphics.getHeight()), 								--y
