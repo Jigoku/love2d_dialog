@@ -59,9 +59,9 @@ function dialog:getMessageHeight(w,message)
 	return self.message_font:getHeight() * lines+ self.title_height + self.title_padding*4
 end
 
-function dialog:create(title,message,x,y,w,align)
+function dialog:create(title,message,x,y,w,align,canshade)
 	if w < self.min_width then w = self.min_width end
-
+	
 	table.insert(self.list, {
 		title = title,
 		message = message,
@@ -72,7 +72,8 @@ function dialog:create(title,message,x,y,w,align)
 		state = 0,
 		canvas = love.graphics.newCanvas(w,h),
 		opacity = 0,
-		align = align or "left"
+		align = align or "left",
+		canshade = canshade,
 	})
 end
 
@@ -179,7 +180,7 @@ function dialog:mousepressed(x,y,button)
 			end
 			if button == "r" then
 				if self:check_collision(x,y,0,0,d.x,d.y,d.w,self.title_height) then
-					d.shaded = not d.shaded
+					d.shaded = (d.canshade and not d.shaded)
 					if d.shaded then 
 						d.h = self.title_height
 					else

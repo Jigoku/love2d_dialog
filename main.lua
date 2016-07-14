@@ -38,7 +38,8 @@ function love.keypressed(key)
 		math.random(0,love.graphics.getWidth()),								--x
 		math.random(0,love.graphics.getHeight()), 								--y
 		math.random(50,250),													--maximum width
-		align
+		align,																	--alignment
+		true																	--can shade?
 		)
 		
 	end
