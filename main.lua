@@ -6,26 +6,30 @@ local cursor = require("lib/cursor")
 function love.load()
 	math.randomseed(os.time())
 	love.graphics.setBackgroundColor(120,120,120)
+	background = love.graphics.newImage("tiles/field.png")
 	
 	cursor:new("cursors/2.png")
 	dialog:newmenu(
 		{
-		[1] = { name = "Show Message", action = function() dialog:new("Hello", "This is a test",50,50,100,"left",true) end },
-		[2] = { name = "Dummy1", action = function() return end },
+		[1] = { name = "Text dialog", action = function() dialog:new("Hello", "This is a test",love.mouse.getX(),love.mouse.getY(),100,"left",true) end },
+		[2] = { name = "Userdata Dialog", action = function() dialog:new("Image",background,love.mouse.getX(),love.mouse.getY(),background:getWidth(),nil,true) end },
 		[3] = { name = "Dummy2", action = function() return end },
 		[4] = { name = "Dummy3", action = function() return end },
 		[5] = { name = "Cancel", action = function() dialog.menu.active = false end },
 		}
 	)
+	
+
 end
 
 function love.draw()
-	dialog:draw()
 	
-	love.graphics.setColor(0,0,0,100)
-	love.graphics.rectangle("fill", 0,0,215,25)
-	love.graphics.setColor(255,255,255,200)
-	love.graphics.print("Press [space] to spawn a dialog",5,5)
+	
+	dialog:draw()
+
+
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.print("Press [space] to spawn a dialog, [right click] for menu.",5,5)
 end
 
 

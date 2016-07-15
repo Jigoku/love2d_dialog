@@ -35,14 +35,14 @@ dialog = {
 	menu_font = love.graphics.newFont(12),
 	min_width = 150,
 	fade_speed = 1000,
-	opacity = 200,
+	opacity = 255,
 	
 	-- title_image = nil,
 	title_image = love.graphics.newImage("titlebars/3.png"),
 	
 	colours = {
-		background = { 30,30,30,255 },
-		title = { 120,255,120,255 },
+		background = { 30,30,30,200 },
+		title = { 120,255,120,200 },
 		button = { 130,130,130,255 },
 		border = { 0,0,0,255 },
 		title_text = { 200,200,200,255 },
@@ -59,17 +59,16 @@ dialog.menu = {
 	x = nil,
 	y = nil,
 	active = false,
-	w = 100,
+	w = 120,
 	title = "Menu",
 	proximity = 150,
 }
 	
 dialog.menu.colours = {
-	item = { 50,50,50,155 },
-	item_alt = { 75,75,75,155 },
+	item = { 70,70,70,125 },
 	hover = {10,10,10,255 },
 }
-dialog.menu.list = { [1] = {"null", nil} }
+dialog.menu.list = {  }
 
 
 local setColour = function(t)
@@ -89,8 +88,8 @@ function dialog:new(title,message,x,y,w,align,canshade)
 		message = message,
 		x = x,
 		y = y,
-		w = w,
-		h = self:getMessageHeight(w, message),
+		w = (type(message) == "userdata" and  message:getWidth()+self.menu_padding*2 or w),
+		h = (type(message) == "userdata" and  message:getHeight()+self.menu_padding*2+self.title_height or self:getMessageHeight(w, message)),
 		state = 0,
 		canvas = love.graphics.newCanvas(w,h),
 		opacity = 0,
@@ -103,7 +102,7 @@ function dialog:newmenu(table)
 	self.menu.list = table
 	self.menu.h = #self.menu.list*self.menu_font:getHeight()+self.menu_padding+self.title_height
 	self.menu.canvas = love.graphics.newCanvas(self.menu.w,self.menu.h)
-	
+
 	for i,m in ipairs(self.menu.list) do
 		m.x = self.menu_padding
 		m.y = self.menu_padding+self.menu_font:getHeight()*(i)
@@ -152,16 +151,21 @@ function dialog:draw()
 		love.graphics.rectangle("line", 0,0,d.w,d.h )
 		
 		--message text
-		setColour(self.colours.message_text)
-		love.graphics.setFont(self.message_font)
 		if not d.shaded then
-		love.graphics.printf(
-			d.message, 
-			self.message_padding,
-			self.message_padding+self.title_height,
-			d.w-self.message_padding*2,
-			d.align,0,1,1
-		)
+			if type(d.message) == "userdata" then
+				love.graphics.setColor(255,255,255,255)
+				love.graphics.draw(d.message,self.message_padding,self.message_padding+self.title_height)
+			else
+			love.graphics.setFont(self.message_font)
+			setColour(self.colours.message_text)
+			love.graphics.printf(
+				d.message, 
+				self.message_padding,
+				self.message_padding+self.title_height,
+				d.w-self.message_padding*2,
+				d.align,0,1,1
+			)
+			end
 		end
 		
 		--titlebar
@@ -222,9 +226,9 @@ function dialog:draw()
 				setColour(self.menu.colours.hover)
 			else
 				if switch then 
-					setColour(self.menu.colours.item)
+					love.graphics.setColor(0,0,0,0)
 				else
-					setColour(self.menu.colours.item_alt)
+					setColour(self.menu.colours.item)
 				end
 			end
 					
