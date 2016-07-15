@@ -88,7 +88,7 @@ function dialog:new(title,message,x,y,w,align,canshade)
 		message = message,
 		x = x,
 		y = y,
-		w = (type(message) == "userdata" and  message:getWidth()+self.menu_padding*2 or w),
+		w = (type(message) == "userdata" and  message:getWidth()+(self.menu_padding*2) or w),
 		h = (type(message) == "userdata" and  message:getHeight()+self.menu_padding*2+self.title_height or self:getMessageHeight(w, message)),
 		state = 0,
 		canvas = love.graphics.newCanvas(w,h),
@@ -330,7 +330,7 @@ function dialog:mousepressed(x,y,button)
 					if d.shaded then 
 						d.h = self.title_height
 					else
-						d.h = self:getMessageHeight(d.w,d.message)
+						d.h = (type(d.message) == "userdata" and  d.message:getHeight()+self.menu_padding*2+self.title_height or self:getMessageHeight(d.w, d.message))
 					end
 				end
 				return
