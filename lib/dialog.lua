@@ -140,7 +140,23 @@ function dialog:draw()
 		--frame
 		setColour(self.colours.border)
 		love.graphics.rectangle("line", 0,0,d.w,d.h )
-				
+		
+		--message text
+		setColour(self.colours.message_text)
+		love.graphics.setFont(self.message_font)
+		if not d.shaded then
+		love.graphics.printf(
+			d.message, 
+			self.message_padding,
+			self.message_padding+self.title_height,
+			d.w-self.message_padding*2,
+			d.align,0,1,1
+		)
+		end
+		
+		--titlebar
+		self:drawTitleBar(d)
+		
 		--button
 		setColour(self.colours.button)
 		local s = self.title_height-(self.title_padding*2)
@@ -156,20 +172,6 @@ function dialog:draw()
 		love.graphics.line(x+s-pad,y+pad,x+pad,y+s-pad)
 		
 		
-		--message text
-		setColour(self.colours.message_text)
-		love.graphics.setFont(self.message_font)
-		if not d.shaded then
-		love.graphics.printf(
-			d.message, 
-			self.message_padding,
-			self.message_padding+self.title_height,
-			d.w-self.message_padding*2,
-			d.align,0,1,1
-		)
-		end
-		
-		self:drawTitleBar(d)
 		
 		love.graphics.setCanvas()
 			
