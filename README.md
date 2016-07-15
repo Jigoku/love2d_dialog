@@ -1,7 +1,8 @@
 # love2d_dialog
 a simple library for spawning dialog boxes
 
-![screenshot](https://cloud.githubusercontent.com/assets/1535179/16829675/d7e62658-4991-11e6-9cc7-4a249081dbd5.png)
+![screenshot_20160715_214425](https://cloud.githubusercontent.com/assets/1535179/16887993/55a18ab2-4ad5-11e6-82fc-c19c56fa1d41.png)
+
 
 ### Setup
 
