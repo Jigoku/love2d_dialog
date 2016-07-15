@@ -61,6 +61,7 @@ dialog.menu = {
 	active = false,
 	w = 100,
 	title = "Menu",
+	proximity = 150,
 }
 	
 dialog.menu.colours = {
@@ -259,8 +260,11 @@ function dialog:update(dt)
 	
 	if self.menu.active then
 		if not self:check_collision(
-			love.mouse.getX(),love.mouse.getY(),0,0,
-			self.menu.x-100,self.menu.y-100,self.menu.x+self.menu.w+100,self.menu.y+self.menu.h+200) then
+			love.mouse.getX(),love.mouse.getY(),
+			0,0,
+			self.menu.x-self.menu.proximity,self.menu.y-self.menu.proximity,
+			self.menu.w+(self.menu.proximity*2),self.menu.h+(self.menu.proximity*2)
+		) then
 			
 			self.menu.active = false
 		end
@@ -271,6 +275,9 @@ function dialog:mousepressed(x,y,button)
 	
 	if self.menu.active then
 		if self:check_collision(x,y,0,0,self.menu.x,self.menu.y,self.menu.w,self.menu.h) then
+			if button == "l" then
+				-- activate menu buttons
+			end
 			return
 		else
 			self.menu.active = false
