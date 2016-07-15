@@ -18,7 +18,7 @@ Create a userdata window:
 ``dialog:new("Userdata",canvas,100,100,canvas:getWidth(),nil,true)``
 
 Create a menu (right click)
-``
+```
 dialog:newmenu(
 	{
 	[1] = { name = "Text dialog", action = function() dialog:new("Message", "This is a message",love.mouse.getX(),love.mouse.getY(),100,"left",true) end },
@@ -26,5 +26,5 @@ dialog:newmenu(
 	[3] = { name = "Cancel", action = function() dialog.menu.active = false end },
 	}
 )
-``
+```
 See `main.lua` for an example.
