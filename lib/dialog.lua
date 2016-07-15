@@ -33,7 +33,7 @@ dialog = {
 	title_font = love.graphics.newFont(13),
 	message_font = love.graphics.newFont(11),
 	menu_font = love.graphics.newFont(12),
-	min_width = 150,
+	min_width = 50,
 	fade_speed = 1000,
 	opacity = 255,
 	
@@ -81,15 +81,23 @@ function dialog:getMessageHeight(w,message)
 end
 
 function dialog:new(title,message,x,y,w,align,canshade)
-	if w < self.min_width then w = self.min_width end
+
 	
+	local w = (type(message) == "userdata" 
+			and message:getWidth()+(self.menu_padding*2) or w)
+	
+	local h = (type(message) == "userdata" 
+			and message:getHeight()+self.menu_padding*2+self.title_height 
+			or self:getMessageHeight(w, message))
+				if w < self.min_width then w = self.min_width end
+	print (type(message))
 	table.insert(self.list, {
 		title = title,
 		message = message,
 		x = x,
 		y = y,
-		w = (type(message) == "userdata" and  message:getWidth()+(self.menu_padding*2) or w),
-		h = (type(message) == "userdata" and  message:getHeight()+self.menu_padding*2+self.title_height or self:getMessageHeight(w, message)),
+		w = w,
+		h = h,
 		state = 0,
 		canvas = love.graphics.newCanvas(w,h),
 		opacity = 0,
@@ -118,7 +126,7 @@ function dialog:drawTitleBar(d)
 	setColour(self.colours.title)
 	love.graphics.rectangle("fill", 0,0,d.w,self.title_height)
 		
-	if type(self.title_image) == "userdata" then			
+	if type(self.title_image) == "userdata" then
 		for x=0,d.w,self.title_image:getWidth() do
 			love.graphics.draw(self.title_image,x,0,0,1,self.title_height/self.title_image:getHeight())
 		end
