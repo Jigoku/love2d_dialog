@@ -8,6 +8,14 @@ function love.load()
 	love.graphics.setBackgroundColor(120,120,120)
 	
 	cursor:new("cursors/2.png")
+	dialog:newmenu(
+		{
+		"Walk to",
+		"Attack",
+		"Build",
+		"Cancel",
+		}
+	)
 end
 
 function love.draw()

@@ -28,9 +28,11 @@
 dialog = {
 	title_padding = 5,
 	message_padding = 10,
+	menu_padding = 10,
 	title_height = 25,
 	title_font = love.graphics.newFont(13),
 	message_font = love.graphics.newFont(11),
+	menu_font = love.graphics.newFont(12),
 	min_width = 150,
 	fade_speed = 1000,
 	opacity = 200,
@@ -51,6 +53,21 @@ dialog = {
 
 
 dialog.list = {}
+
+
+dialog.menu = {
+	x = nil,
+	y = nil,
+	active = false,
+	w = 100,
+	title = "Menu",
+}
+	
+dialog.menu.colours = {
+	item = { 50,50,50,155 },
+	item_alt = { 75,75,75,155 },
+}
+dialog.menu.list = { "null" }
 
 
 local setColour = function(t)
@@ -80,34 +97,48 @@ function dialog:new(title,message,x,y,w,align,canshade)
 	})
 end
 
+function dialog:newmenu(table)
+	self.menu.list = table
+	self.menu.h = #self.menu.list*self.menu_font:getHeight()+self.menu_padding+self.title_height
+	self.menu.canvas = love.graphics.newCanvas(self.menu.w,self.menu.h)
+end
+
+function dialog:drawTitleBar(d)
+	--title
+	setColour(self.colours.title)
+	love.graphics.rectangle("fill", 0,0,d.w,self.title_height)
+		
+	if type(self.title_image) == "userdata" then			
+		for x=0,d.w,self.title_image:getWidth() do
+			love.graphics.draw(self.title_image,x,0,0,1,self.title_height/self.title_image:getHeight())
+		end
+	end
+	
+	--title text
+	setColour(self.colours.title_text)	
+			
+	love.graphics.setFont(self.title_font)
+	love.graphics.printf(d.title, self.title_padding,self.title_padding,0,"left",0,1,1)
+	--frame
+	setColour(self.colours.border)
+	love.graphics.rectangle("line", 0,0,d.w,self.title_height )
+end
+
 function dialog:draw()
 
 		
 	for _,d in ipairs(self.list) do
+		love.graphics.setColor(255,255,255,255)
 		love.graphics.setCanvas(d.canvas)
 		d.canvas:clear()
 			
 		--background
 		setColour(self.colours.background)
 		love.graphics.rectangle("fill", 0,0,d.w,d.h )
-			
+
 		--frame
 		setColour(self.colours.border)
 		love.graphics.rectangle("line", 0,0,d.w,d.h )
-			
-		--title
-		setColour(self.colours.title)
-		love.graphics.rectangle("fill", 0,0,d.w,self.title_height)
-		
-		if type(self.title_image) == "userdata" then			
-			for x=0,d.w,self.title_image:getWidth() do
-				love.graphics.draw(self.title_image,x,0,0,1,self.title_height/self.title_image:getHeight())
-			end
-		end
-		
-		--frame
-		setColour(self.colours.border)
-		love.graphics.rectangle("line", 0,0,d.w,self.title_height )
 				
 		--button
 		setColour(self.colours.button)
@@ -123,12 +154,6 @@ function dialog:draw()
 		love.graphics.line(x+pad,y+pad,x+s-pad,y+s-pad)
 		love.graphics.line(x+s-pad,y+pad,x+pad,y+s-pad)
 		
-		--title text
-		setColour(self.colours.title_text)	
-			
-		love.graphics.setFont(self.title_font)
-		love.graphics.printf(d.title, self.title_padding,self.title_padding,0,"left",0,1,1)
-		
 		
 		--message text
 		setColour(self.colours.message_text)
@@ -143,11 +168,72 @@ function dialog:draw()
 		)
 		end
 		
+		self:drawTitleBar(d)
+		
 		love.graphics.setCanvas()
 			
 		--draw the message box
 		love.graphics.setColor(255,255,255,d.opacity)
 		love.graphics.draw(d.canvas, d.x,d.y)
+		
+	end
+	
+	
+	-- draw action menu
+	
+	if self.menu.active then
+		love.graphics.setColor(255,255,255,255)
+		love.graphics.setCanvas(self.menu.canvas)
+		self.menu.canvas:clear()
+		
+		setColour(self.colours.background)
+		love.graphics.rectangle(
+		"fill", 
+			0,
+			0,
+			self.menu.w, 
+			self.menu.h
+		)
+		
+		--frame
+		setColour(self.colours.border)
+		love.graphics.rectangle("line", 0,0,self.menu.w,self.menu.h )
+				
+		
+		love.graphics.setFont(self.menu_font)
+		
+		local switch = false
+		for i,m in ipairs(self.menu.list) do
+			if switch then 
+				setColour(self.menu.colours.item)
+			else
+				setColour(self.menu.colours.item_alt)
+			end
+		
+			love.graphics.rectangle(
+				"fill", 
+				self.menu_padding,
+				self.menu_padding+self.menu_font:getHeight()*(i),
+				self.menu.w,
+				self.menu_font:getHeight()
+			)
+			
+			setColour(self.colours.message_text)
+			love.graphics.printf(
+				m, 
+				self.menu_padding,
+				self.menu_padding+self.menu_font:getHeight()*(i),
+				self.menu.w-self.menu_padding*2,"left",0,1,1
+			)
+			switch = not switch 
+		end
+		--titlebar
+		self:drawTitleBar(self.menu)
+		
+		love.graphics.setCanvas()
+		
+		love.graphics.setColor(255,255,255,self.opacity)
+		love.graphics.draw(self.menu.canvas, self.menu.x,self.menu.y)
 		
 	end
 end
@@ -170,11 +256,28 @@ function dialog:update(dt)
 			end
 		end
 	end
+	
+	if self.menu.active then
+		if not self:check_collision(
+			love.mouse.getX(),love.mouse.getY(),0,0,
+			self.menu.x-100,self.menu.y-100,self.menu.x+self.menu.w+100,self.menu.y+self.menu.h+200) then
+			
+			self.menu.active = false
+		end
+	end
 end
 
 function dialog:mousepressed(x,y,button)
-	if #self.list < 1 then return end
 	
+	if self.menu.active then
+		if self:check_collision(x,y,0,0,self.menu.x,self.menu.y,self.menu.w,self.menu.h) then
+			return
+		else
+			self.menu.active = false
+		end
+	end
+	
+
 	for i=#self.list,1,-1 do
 		local d = self.list[i]
 		local s = self.title_height-(self.title_padding*2)
@@ -200,7 +303,12 @@ function dialog:mousepressed(x,y,button)
 				return
 			end
 		end
-		
+	end
+	
+	if button == "r" then
+		self.menu.x = x -self.menu_padding
+		self.menu.y = y -self.menu_padding
+		self.menu.active = true
 	end
 	
 end
