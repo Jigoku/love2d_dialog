@@ -10,10 +10,11 @@ function love.load()
 	cursor:new("cursors/2.png")
 	dialog:newmenu(
 		{
-		"Walk to",
-		"Attack",
-		"Build",
-		"Cancel",
+		[1] = { name = "Show Message", action = function() dialog:new("Hello", "This is a test",50,50,100,"left",true) end },
+		[2] = { name = "Dummy1", action = function() return end },
+		[3] = { name = "Dummy2", action = function() return end },
+		[4] = { name = "Dummy3", action = function() return end },
+		[5] = { name = "Cancel", action = function() dialog.menu.active = false end },
 		}
 	)
 end

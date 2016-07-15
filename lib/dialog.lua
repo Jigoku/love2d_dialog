@@ -67,8 +67,9 @@ dialog.menu = {
 dialog.menu.colours = {
 	item = { 50,50,50,155 },
 	item_alt = { 75,75,75,155 },
+	hover = {10,10,10,255 },
 }
-dialog.menu.list = { "null" }
+dialog.menu.list = { [1] = {"null", nil} }
 
 
 local setColour = function(t)
@@ -102,6 +103,15 @@ function dialog:newmenu(table)
 	self.menu.list = table
 	self.menu.h = #self.menu.list*self.menu_font:getHeight()+self.menu_padding+self.title_height
 	self.menu.canvas = love.graphics.newCanvas(self.menu.w,self.menu.h)
+	
+	for i,m in ipairs(self.menu.list) do
+		m.x = self.menu_padding
+		m.y = self.menu_padding+self.menu_font:getHeight()*(i)
+		m.w = self.menu.w
+		m.h = self.menu_font:getHeight()
+		m.active = false
+	end		
+
 end
 
 function dialog:drawTitleBar(d)
@@ -207,28 +217,24 @@ function dialog:draw()
 		
 		local switch = false
 		for i,m in ipairs(self.menu.list) do
-			if switch then 
-				setColour(self.menu.colours.item)
-			else
-				setColour(self.menu.colours.item_alt)
-			end
 		
-			love.graphics.rectangle(
-				"fill", 
-				self.menu_padding,
-				self.menu_padding+self.menu_font:getHeight()*(i),
-				self.menu.w,
-				self.menu_font:getHeight()
-			)
-			
+			if m.active then 
+				setColour(self.menu.colours.hover)
+			else
+				if switch then 
+					setColour(self.menu.colours.item)
+				else
+					setColour(self.menu.colours.item_alt)
+				end
+			end
+					
+			love.graphics.rectangle("fill", m.x,m.y,m.w,m.h)
+
 			setColour(self.colours.message_text)
-			love.graphics.printf(
-				m, 
-				self.menu_padding,
-				self.menu_padding+self.menu_font:getHeight()*(i),
-				self.menu.w-self.menu_padding*2,"left",0,1,1
-			)
+			love.graphics.printf(m.name, m.x,m.y,m.w,"left",0,1,1)
+				
 			switch = not switch 
+			
 		end
 		--titlebar
 		self:drawTitleBar(self.menu)
@@ -269,6 +275,14 @@ function dialog:update(dt)
 		) then
 			
 			self.menu.active = false
+		else
+			for i,m in ipairs(self.menu.list) do
+				if self:check_collision(love.mouse.getX(),love.mouse.getY(),1,1,self.menu.x+m.x,self.menu.y+m.y,m.w,m.h) then
+					m.active = true
+				else
+					m.active = false
+				end
+			end
 		end
 	end
 end
@@ -278,7 +292,13 @@ function dialog:mousepressed(x,y,button)
 	if self.menu.active then
 		if self:check_collision(x,y,0,0,self.menu.x,self.menu.y,self.menu.w,self.menu.h) then
 			if button == "l" then
-				-- activate menu buttons
+					for i,m in ipairs(self.menu.list) do
+						if self:check_collision(love.mouse.getX(),love.mouse.getY(),1,1,self.menu.x+m.x,self.menu.y+m.y,m.w,m.h) then
+							self.menu.active = false
+							m.action()
+							return
+						end
+					end
 			end
 			return
 		else
