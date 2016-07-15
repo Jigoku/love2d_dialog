@@ -71,6 +71,7 @@ dialog.menu.colours = {
 dialog.menu.list = {  }
 
 
+
 local setColour = function(t)
 	love.graphics.setColor(t[1],t[2],t[3],t[4])
 end
@@ -82,14 +83,15 @@ end
 
 function dialog:new(title,message,x,y,w,align,canshade)
 
-	
 	local w = (type(message) == "userdata" 
 			and message:getWidth()+(self.menu_padding*2) or w)
 	
 	local h = (type(message) == "userdata" 
 			and message:getHeight()+self.menu_padding*2+self.title_height 
 			or self:getMessageHeight(w, message))
-				if w < self.min_width then w = self.min_width end
+			
+	if w < self.min_width then w = self.min_width end
+	
 	print (type(message))
 	table.insert(self.list, {
 		title = title,
@@ -360,5 +362,12 @@ function dialog:check_collision(x1,y1,w1,h1, x2,y2,w2,h2)
 		 y1 < y2+h2 and
 		 y2 < y1+h1
 end
+
+
+dialog:newmenu(
+	{
+	[1] = { name = "Cancel", action = function() dialog.menu.active = false end },
+	}
+)
 
 return dialog
