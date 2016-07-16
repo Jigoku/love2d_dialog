@@ -66,6 +66,7 @@ dialog.menu = {
 	
 dialog.menu.colours = {
 	item = { 70,70,70,125 },
+	separator = { 170,170,170,125 },
 	hover = {10,10,10,255 },
 }
 dialog.menu.list = {  }
@@ -231,7 +232,7 @@ function dialog:draw()
 		
 		local switch = false
 		for i,m in ipairs(self.menu.list) do
-		
+			
 			if m.active then 
 				setColour(self.menu.colours.hover)
 			else
@@ -241,13 +242,17 @@ function dialog:draw()
 					setColour(self.menu.colours.item)
 				end
 			end
-					
+			switch = not switch 	
+			
 			love.graphics.rectangle("fill", m.x,m.y,m.w,m.h)
-
-			setColour(self.colours.message_text)
-			love.graphics.printf(m.name, m.x,m.y,m.w,"left",0,1,1)
-				
-			switch = not switch 
+			
+			if m.type == "separator" then
+				setColour(self.menu.colours.separator)
+				love.graphics.line(m.x,m.y+m.h/2,m.x+m.w,m.y+m.h/2)
+			elseif m.type == "button" then
+				setColour(self.colours.message_text)
+				love.graphics.printf(m.name, m.x,m.y,m.w,"left",0,1,1)	
+			end
 			
 		end
 		--titlebar
@@ -291,10 +296,12 @@ function dialog:update(dt)
 			self.menu.active = false
 		else
 			for i,m in ipairs(self.menu.list) do
-				if self:check_collision(love.mouse.getX(),love.mouse.getY(),1,1,self.menu.x+m.x,self.menu.y+m.y,m.w,m.h) then
-					m.active = true
-				else
-					m.active = false
+				if m.type == "button" then
+					if self:check_collision(love.mouse.getX(),love.mouse.getY(),1,1,self.menu.x+m.x,self.menu.y+m.y,m.w,m.h) then
+						m.active = true
+					else
+						m.active = false
+					end
 				end
 			end
 		end
@@ -307,10 +314,12 @@ function dialog:mousepressed(x,y,button)
 		if self:check_collision(x,y,0,0,self.menu.x,self.menu.y,self.menu.w,self.menu.h) then
 			if button == "l" then
 					for i,m in ipairs(self.menu.list) do
-						if self:check_collision(love.mouse.getX(),love.mouse.getY(),1,1,self.menu.x+m.x,self.menu.y+m.y,m.w,m.h) then
-							self.menu.active = false
-							m.action()
-							return
+						if m.type == "button" then
+							if self:check_collision(love.mouse.getX(),love.mouse.getY(),1,1,self.menu.x+m.x,self.menu.y+m.y,m.w,m.h) then
+								self.menu.active = false
+								m.action()
+								return
+							end
 						end
 					end
 			end

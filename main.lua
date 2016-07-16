@@ -13,11 +13,12 @@ function love.load()
 	cursor:new("cursors/2.png")
 	dialog:newmenu(
 		{
-		[1] = { name = "Text dialog", action = function() dialog:new("Message", "This is a test",love.mouse.getX(),love.mouse.getY(),100,"left",true) end },
-		[2] = { name = "Image 1", action = function() dialog:new("Grass",field,love.mouse.getX(),love.mouse.getY(),field:getWidth(),nil,true) end },
-		[3] = { name = "Image 2", action = function() dialog:new("Tux",tux,love.mouse.getX(),love.mouse.getY(),tux:getWidth(),nil,true) end },
-		[4] = { name = "Dummy", action = function() return end },
-		[5] = { name = "Cancel", action = function() dialog.menu.active = false end },
+		[1] = { type = "button", name = "Text dialog", action = function() dialog:new("Message", "This is a test",love.mouse.getX(),love.mouse.getY(),100,"left",true) end },
+		[2] = { type = "button", name = "Image 1", action = function() dialog:new("Grass",field,love.mouse.getX(),love.mouse.getY(),field:getWidth(),nil,true) end },
+		[3] = { type = "button", name = "Image 2", action = function() dialog:new("Tux",tux,love.mouse.getX(),love.mouse.getY(),tux:getWidth(),nil,true) end },
+		[4] = { type = "separator" },
+		[5] = { type = "button", name = "Clear", action = function() dialog.list = {} end },
+		[6] = { type = "button", name = "Cancel", action = function() dialog.menu.active = false end },
 		}
 	)
 	
