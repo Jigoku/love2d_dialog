@@ -9,16 +9,18 @@ function love.load()
 	
 	field = love.graphics.newImage("tiles/field.png")
 	tux = love.graphics.newImage("tiles/tux.png")
+	globe = love.graphics.newImage("icons/1.png")
 	
 	cursor:new("cursors/2.png")
+	
 	dialog:newmenu(
 		{
-		[1] = { type = "button", name = "Text dialog", action = function() dialog:new("Message", "This is a test",love.mouse.getX(),love.mouse.getY(),100,"left",true) end },
-		[2] = { type = "button", name = "Image 1", action = function() dialog:new("Grass",field,love.mouse.getX(),love.mouse.getY(),field:getWidth(),nil,true) end },
-		[3] = { type = "button", name = "Image 2", action = function() dialog:new("Tux",tux,love.mouse.getX(),love.mouse.getY(),tux:getWidth(),nil,true) end },
-		[4] = { type = "separator" },
-		[5] = { type = "button", name = "Clear", action = function() dialog.list = {} end },
-		[6] = { type = "button", name = "Cancel", action = function() dialog.menu.active = false end },
+		 { type = "button", icon = globe, name = "Text dialog", action = function() dialog:new("Message", "This is a test",love.mouse.getX(),love.mouse.getY(),100,"left",true) end },
+		 { type = "button", name = "Image 1", action = function() dialog:new("Grass",field,love.mouse.getX(),love.mouse.getY(),field:getWidth(),nil,true) end },
+		 { type = "button", icon = globe, name = "Image 2", action = function() dialog:new("Tux",tux,love.mouse.getX(),love.mouse.getY(),tux:getWidth(),nil,true) end },
+		 { type = "separator" },
+		 { type = "button", name = "Clear", action = function() dialog.list = {} end },
+		 { type = "button", name = "Cancel", action = function() dialog.menu.active = false end },
 		}
 	)
 	

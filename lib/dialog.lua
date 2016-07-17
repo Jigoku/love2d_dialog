@@ -30,7 +30,7 @@ dialog = {
 	message_padding = 10,
 	menu_padding = 10,
 	title_height = 25,
-	title_font = love.graphics.newFont(13),
+	title_font = love.graphics.newFont(12),
 	message_font = love.graphics.newFont(11),
 	menu_font = love.graphics.newFont(12),
 	min_width = 50,
@@ -62,12 +62,14 @@ dialog.menu = {
 	w = 120,
 	title = "Menu",
 	proximity = 150,
+	tabwidth = 15
 }
 	
 dialog.menu.colours = {
 	item = { 70,70,70,125 },
 	separator = { 170,170,170,125 },
-	hover = {10,10,10,255 },
+	hover = {10,10,10,200 },
+	tab = {10,10,10,100 },
 }
 dialog.menu.list = {  }
 
@@ -115,7 +117,7 @@ function dialog:newmenu(table)
 	self.menu.canvas = love.graphics.newCanvas(self.menu.w,self.menu.h)
 
 	for i,m in ipairs(self.menu.list) do
-		m.x = self.menu_padding
+		m.x = self.menu.tabwidth
 		m.y = self.menu_padding+self.menu_font:getHeight()*(i)
 		m.w = self.menu.w
 		m.h = self.menu_font:getHeight()
@@ -227,6 +229,13 @@ function dialog:draw()
 		setColour(self.colours.border)
 		love.graphics.rectangle("line", 0,0,self.menu.w,self.menu.h )
 				
+			--menu tab
+		setColour(self.menu.colours.tab)
+		love.graphics.rectangle("fill", 0,self.title_height,self.menu.tabwidth,self.menu.h)
+		
+		--titlebar
+		self:drawTitleBar(self.menu)
+		
 		
 		love.graphics.setFont(self.menu_font)
 		
@@ -253,11 +262,14 @@ function dialog:draw()
 				setColour(self.colours.message_text)
 				love.graphics.printf(m.name, m.x,m.y,m.w,"left",0,1,1)	
 			end
-			
+			 
+			if type(m.icon) == "userdata" then
+				love.graphics.setColor(255,255,255,255)
+				love.graphics.draw(m.icon,m.x-self.menu.tabwidth,m.y,0,self.menu.tabwidth/m.icon:getWidth(),m.h/m.icon:getHeight())
+			end
 		end
-		--titlebar
-		self:drawTitleBar(self.menu)
 		
+	
 		love.graphics.setCanvas()
 		
 		love.graphics.setColor(255,255,255,self.opacity)
