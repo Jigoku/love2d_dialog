@@ -48,7 +48,7 @@ function love.keypressed(key)
 		love.event.quit()
 	end
 	
-	if key == " " then
+	if key == "space" then
 		
 		local n = math.random(0,2)
 		local align = (n == 0 and "left" or n == 1 and "center" or n == 2 and "right")

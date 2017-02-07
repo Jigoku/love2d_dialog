@@ -81,7 +81,7 @@ end
 
 function dialog:getMessageHeight(w,message)
 	local _,lines  = self.message_font:getWrap(message, w-self.message_padding*2)
-	return self.message_font:getHeight() * lines+ self.title_height + self.title_padding*4
+	return self.message_font:getHeight() * #lines+ self.title_height + self.title_padding*4
 end
 
 function dialog:new(title,message,x,y,w,align,canshade)
@@ -153,7 +153,7 @@ function dialog:draw()
 	for _,d in ipairs(self.list) do
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.setCanvas(d.canvas)
-		d.canvas:clear()
+		love.graphics.clear()
 			
 		--background
 		setColour(self.colours.background)
@@ -214,7 +214,7 @@ function dialog:draw()
 	if self.menu.active then
 		love.graphics.setColor(255,255,255,255)
 		love.graphics.setCanvas(self.menu.canvas)
-		self.menu.canvas:clear()
+		love.graphics.clear()
 		
 		setColour(self.colours.background)
 		love.graphics.rectangle(
@@ -324,7 +324,7 @@ function dialog:mousepressed(x,y,button)
 	
 	if self.menu.active then
 		if self:check_collision(x,y,0,0,self.menu.x,self.menu.y,self.menu.w,self.menu.h) then
-			if button == "l" then
+			if button == 1 then
 					for i,m in ipairs(self.menu.list) do
 						if m.type == "button" then
 							if self:check_collision(love.mouse.getX(),love.mouse.getY(),1,1,self.menu.x+m.x,self.menu.y+m.y,m.w,m.h) then
@@ -349,13 +349,13 @@ function dialog:mousepressed(x,y,button)
 		local y2 = d.y+self.title_padding
 		
 		if self:check_collision(x,y,0,0,d.x,d.y,d.w,d.h) then
-			if button == "l" then
+			if button == 1 then
 				if self:check_collision(x,y,0,0,x2,y2,s,s) then
 					d.state = 2
 				end
 				return
 			end
-			if button == "r" then
+			if button == 3 then
 				if self:check_collision(x,y,0,0,d.x,d.y,d.w,self.title_height) then
 					d.shaded = (d.canshade and not d.shaded)
 					if d.shaded then 
@@ -369,7 +369,7 @@ function dialog:mousepressed(x,y,button)
 		end
 	end
 	
-	if button == "r" then
+	if button == 2 then
 		self.menu.x = x -self.menu_padding
 		self.menu.y = y -self.menu_padding
 		self.menu.active = true
