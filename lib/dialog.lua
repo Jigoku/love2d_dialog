@@ -320,6 +320,20 @@ function dialog:update(dt)
 	end
 end
 
+function dialog:mousemoved(x,y,dx,dy)
+
+	if love.mouse.isDown(1) then
+	
+		for i=#self.list,1,-1 do
+			local d = self.list[i]
+			if self:check_collision(x,y,0,0,d.x,d.y,d.w,self.title_height) then
+				d.x = d.x + dx
+				d.y = d.y + dy
+			end
+		end
+	end
+end
+
 function dialog:mousepressed(x,y,button)
 	
 	if self.menu.active then

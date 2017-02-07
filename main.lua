@@ -69,3 +69,8 @@ end
 function love.mousepressed(x,y,button)
 	dialog:mousepressed(x,y,button)
 end
+
+
+function love.mousemoved(x,y,dx,dy)
+	dialog:mousemoved(x,y,dx,dy)
+end
